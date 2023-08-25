@@ -1,0 +1,39 @@
+# https://github.com/dockersamples/example-voting-app/tree/main
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+  labels:
+    app: db
+spec:
+  template:
+    metadata:
+      name: postgres
+      labels:
+        name: postgres
+        tier: database
+    spec:
+      image: postgres
+      name: postgres
+  replicas: 3
+---
+apiVersion:
+kind:
+metadata:
+spec:
+---
+apiVersion:
+kind:
+metadata:
+spec:
+---
+apiVersion:
+kind:
+metadata:
+spec:
+---
+apiVersion:
+kind:
+metadata:
+spec:
