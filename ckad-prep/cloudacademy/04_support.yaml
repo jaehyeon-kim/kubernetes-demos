@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    app: microservices
+    tier: support
+  name: support-tier
+spec:
+  containers:
+  - env:
+    - name: API_URL
+      value: http://app-tier:8080
+    image: lrakai/microservices:counter-v1
+    name: counter
+    resources: {}
+  - env:
+    - name: API_URL
+      value: http://app-tier:8080
+    image: lrakai/microservices:poller-v1
+    name: poller
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+
+status: {}

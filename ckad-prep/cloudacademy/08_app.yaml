@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: microservice
+    tier: app
+  name: app-tier
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      tier: app
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        tier: app
+    spec:
+      containers:
+        - image: lrakai/microservices:server-v1
+          name: webserver
+          env:
+            - name: REDIS_URL
+              value: redis://data-tier:6379
+          ports:
+            - containerPort: 8080
+          resources: {}
+          livenessProbe:
+            httpGet:
+              path: /probe/liveness
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /probe/readiness
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+      initContainers:
+        - name: await-redis
+          image: lrakai/microservices:server-v1
+          env:
+          - name: REDIS_URL
+            value: redis://data-tier:6379
+          command:
+          - npm
+          - run-script
+          - await-redis
+status: {}

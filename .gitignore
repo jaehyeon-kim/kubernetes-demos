@@ -1,5 +1,6 @@
 ## custom
 .ignore
+.external
 
 ## sam
 .aws-sam*

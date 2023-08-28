@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: microservice
+    tier: support
+  name: support-tier
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      tier: support
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        tier: support
+    spec:
+      containers:
+      - image: lrakai/microservices:counter-v1
+        name: counter
+        env:
+        - name: API_URL
+          value: http://app-tier:8080
+        resources: {}
+      - image: lrakai/microservices:poller-v1
+        name: poller
+        env:
+        - name: API_URL
+          value: http://app-tier:8080
+        resources: {}
+status: {}

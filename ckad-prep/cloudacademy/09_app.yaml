@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: microservice
+    tier: app
+  name: app-tier
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      tier: app
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        tier: app
+    spec:
+      containers:
+        - image: lrakai/microservices:server-v1
+          name: webserver
+          env:
+            - name: REDIS_URL
+              value: redis://data-tier:6379
+          ports:
+            - containerPort: 8080
+          resources: {}
+status: {}
