@@ -162,3 +162,54 @@ kubectl create -f 10_support.yaml
 
 kubectl delete -f 10_app.yaml -f 10_data.yaml -f 10_support.yaml
 kubectl delete svc app-tier data-tier
+
+#### Multi-container Patterns
+## sidecar
+# helper container to assist a primary container
+# logging, file syncing, watchers ...
+
+# primary - web server
+# sidecar - content puller
+# share volume
+
+## ambassador
+# ambassador container is a proxy for communicating to/from the primary container
+# communicating with databases eg) primary always connect to localhost
+
+# primary container - web app
+# ambassador - database proxy
+
+## adapter
+# standardized interface across multiple pods
+# normalizing output logs and monitoring data
+
+#### Leveraging kubectl
+## shell completion
+# source <(eksctl completion bash)
+kubectl completion --help
+# source <(kubectl completion bash)
+# source <(helm completion bash)
+echo "source <(kubectl completion bash)" >> ~/.bashrc
+echo "source <(helm completion bash)" >> ~/.bashrc
+kubectl get <double-tab>
+
+## short names
+kubectl api-resources
+
+## list resources
+kubectl get po -A
+kubectl get po --show-labels -A # show all labels
+kubectl get po -A -L k8s-app # show specific labels
+kubectl get po -A -L k8s-app -l k8s-app # filter and show specific labels
+kubectl get po -A -L k8s-app -l k8s-app=kube-proxy
+kubectl get po -A -L k8s-app -l k8s-app!=kube-proxy,k8s-app
+
+kubectl get po -n kube-system --sort-by=metadata.creationTimestamp
+kubectl get po -n kube-system --sort-by='{.metadata.creationTimestamp}'
+
+## explain resources
+kubectl explain po
+kubectl explain po.spec.containers
+kubectl explain po.spec.containers.resources
+
+kubectl explain po.spec.containers.resources --recursive
