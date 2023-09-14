@@ -2,6 +2,7 @@
 .ignore
 .external
 *pem
+*Zone.Identifier
 
 ## sam
 .aws-sam*
