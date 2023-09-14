@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ephemeral
+spec:
+  volumes:
+  - name: ephemeral
+    emptyDir: {}
+  containers:
+  - image: busybox
+    name: writer
+    command:
+    - sh
+    - -c
+    - 'i=1; while true; do echo "run $i" >> /tmp/log.log; i=1; sleep 2; done'
+    volumeMounts:
+    - name: ephemeral
+      mountPath: /tmp
+  - image: busybox
+    name: reader
+    command:
+    - sh
+    - -c
+    - 'while true; do tail /tmp/log.log -n 1; sleep 2; done'
+    volumeMounts:
+    - name: ephemeral
+      mountPath: /tmp

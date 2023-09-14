@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  creationTimestamp: null
+  name: cronjob-example
+spec:
+  jobTemplate:
+    metadata:
+      creationTimestamp: null
+      name: cronjob-example
+    spec:
+      ttlSecondsAfterFinished: 100
+      template:
+        metadata:
+          creationTimestamp: null
+        spec:
+          containers:
+          - command:
+            - date
+            image: alpine
+            name: cronjob-example
+            resources: {}
+          restartPolicy: Never
+  schedule: '*/1 * * * *'
+status: {}

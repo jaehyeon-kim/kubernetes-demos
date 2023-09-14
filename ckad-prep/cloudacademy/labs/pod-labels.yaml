@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: red-frontend
+  # namespace: labels # declare namespace in metadata
+  labels: # labels mapping in metadata
+    color: red
+    tier: frontend
+  annotations: # Example annotation
+    Lab: Kubernetes Pod Design for Application Developers
+spec:
+  containers:
+  - image: httpd:2.4.38
+    name: web-server
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: green-frontend
+  # namespace: labels
+  labels:
+    color: green
+    tier: frontend
+spec:
+  containers:
+  - image: httpd:2.4.38
+    name: web-server
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: red-backend
+  # namespace: labels
+  labels:
+    color: red
+    tier: backend
+spec:
+  containers:
+  - image: postgres:11.2-alpine
+    name: db
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: blue-backend
+  # namespace: labels
+  labels:
+    color: blue
+    tier: backend
+spec:
+  containers:
+  - image: postgres:11.2-alpine
+    name: db

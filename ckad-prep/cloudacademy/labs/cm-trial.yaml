@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  DB_NAME: testdb
+  COLLECTION_NAME: messages
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cm-pod
+spec:
+  volumes:
+  - name: cm-vol
+    configMap:
+      name: app-config
+  containers:
+  - image: busybox
+    name: cm-container
+    command: ["sleep", "3600"]
+    env:
+    - name: DB_NAME_ENV
+      valueFrom:
+        configMapKeyRef:
+          name: app-config
+          key: DB_NAME
+    envFrom:
+    - configMapRef:
+        name: app-config
+    volumeMounts:
+    - name: cm-vol
+      mountPath: /tmp

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: simple-sidecar
+  name: simple-sidecar
+spec:
+  containers:
+  - image: busybox
+    name: simple-sidecar
+    command:
+    - bash
+    - -c
+    - 'i=1; while true; do echo "run $i"; ((i+=1)); sleep 2; done'
+
