@@ -15,11 +15,11 @@ Update pod app-sec-kff3345 to run as Root user and with the SYS_TIME capability.
 
 Create a redis deployment using the image redis:alpine with 1 replica and label app=redis. Expose it via a ClusterIP service called redis on port 6379. Create a new Ingress Type NetworkPolicy called redis-access which allows only the pods with label access=redis to access the deployment.
 
-Image: redis:alpine
-Deployment created correctly?
-Service created correctly?
-Network Policy allows the correct pods?
-Network Policy applied on the correct pods?
+- Image: redis:alpine
+- Deployment created correctly?
+- Service created correctly?
+- Network Policy allows the correct pods?
+- Network Policy applied on the correct pods?
 
 ```bash
 k create deploy redis --image=redis:alpine
@@ -47,9 +47,9 @@ Create a Pod called sega with two containers:
 1. Container 1: Name tails with image busybox and command: sleep 3600.
 2. Container 2: Name sonic with image nginx and Environment variable: NGINX_PORT with the value 8080.
 
-Container Sonic has the correct ENV name
-Container Sonic has the correct ENV value
-Container tails created correctly?
+- Container Sonic has the correct ENV name
+- Container Sonic has the correct ENV value
+- Container tails created correctly?
 
 ```bash
 k run sega --image=busybox --dry-run=client -o yaml -- sleep 3600 > sega.yaml
@@ -79,21 +79,16 @@ spec:
 status: {}
 ```
 
-## Mock Exam - 1
+## Mock Exam - 2
 
 Create a deployment called my-webapp with image: nginx, label tier:frontend and 2 replicas. Expose the deployment as a NodePort service with name front-end-service , port: 80 and NodePort: 30083
 
-Deployment my-webapp created?
-
-image: nginx
-
-Replicas = 2 ?
-
-service front-end-service created?
-
-service Type created correctly?
-
-Correct node Port used?
+- Deployment my-webapp created?
+- image: nginx
+- Replicas = 2 ?
+- service front-end-service created?
+- service Type created correctly?
+- Correct node Port used?
 
 ```bash
 k create deploy my-webapp --image=nginx --replicas=2 --dry-run=client -o yaml > deploy.yaml
@@ -103,11 +98,11 @@ k expose deploy my-webapp --name front-end-service --port=80 --type=NodePort --d
 
 Add a taint to the node node01 of the cluster. Use the specification below:
 
-key: app_type, value: alpha and effect: NoSchedule
-Create a pod called alpha, image: redis with toleration to node01.
+- key: app_type, value: alpha and effect: NoSchedule
+- Create a pod called alpha, image: redis with toleration to node01.
 
-node01 with the correct taint?
-Pod alpha has the correct toleration?
+- node01 with the correct taint?
+- Pod alpha has the correct toleration?
 
 ```bash
 kubectl taint nodes node01 app_type=alpha:NoSchedule
@@ -136,19 +131,13 @@ spec:
 
 Apply a label app_type=beta to node controlplane. Create a new deployment called beta-apps with image: nginx and replicas: 3. Set Node Affinity to the deployment to place the PODs on controlplane only.
 
-NodeAffinity: requiredDuringSchedulingIgnoredDuringExecution
-
-controlplane has the correct labels?
-
-Deployment beta-apps: NodeAffinity set to requiredDuringSchedulingIgnoredDuringExecution ?
-
-Deployment beta-apps has correct Key for NodeAffinity?
-
-Deployment beta-apps has correct Value for NodeAffinity?
-
-Deployment beta-apps has pods running only on controlplane?
-
-Deployment beta-apps has 3 pods running?
+- NodeAffinity: requiredDuringSchedulingIgnoredDuringExecution
+- controlplane has the correct labels?
+- Deployment beta-apps: NodeAffinity set to requiredDuringSchedulingIgnoredDuringExecution ?
+- Deployment beta-apps has correct Key for NodeAffinity?
+- Deployment beta-apps has correct Value for NodeAffinity?
+- Deployment beta-apps has pods running only on controlplane?
+- Deployment beta-apps has 3 pods running?
 
 ```bash
 k label node controlplane app_type=beta
@@ -192,11 +181,9 @@ Create a new Ingress Resource for the service my-video-service to be made availa
 
 To create an ingress resource, the following details are: -
 
-annotation: nginx.ingress.kubernetes.io/rewrite-target: /
-
-host: ckad-mock-exam-solution.com
-
-path: /video
+- annotation: nginx.ingress.kubernetes.io/rewrite-target: /
+- host: ckad-mock-exam-solution.com
+- path: /video
 
 Once set up, the curl test of the URL from the nodes should be successful: HTTP 200
 
@@ -225,13 +212,10 @@ spec:
 
 We have deployed a new pod called pod-with-rprobe. This Pod has an initial delay before it is Ready. Update the newly created pod pod-with-rprobe with a readinessProbe using the given spec
 
-httpGet path: /ready
-
-httpGet port: 8080
-
-readinessProbe with the correct httpGet path?
-
-readinessProbe with the correct httpGet port?
+- httpGet path: /ready
+- httpGet port: 8080
+- readinessProbe with the correct httpGet path?
+- readinessProbe with the correct httpGet port?
 
 ```bash
 
@@ -269,23 +253,17 @@ spec:
 
 Create a job called whalesay with image docker/whalesay and command "cowsay I am going to ace CKAD!".
 
-completions: 10
-
-backoffLimit: 6
-
-restartPolicy: Never
+- completions: 10
+- backoffLimit: 6
+- restartPolicy: Never
 
 This simple job runs the popular cowsay game that was modifed by docker…
 
-Job "whalesay" uses correct image?
-
-Job "whalesay" configured with completions = 10?
-
-Job "whalesay" with backoffLimit = 6
-
-Job run's the command "cowsay I am going to ace CKAD!"?
-
-Job "whalesay" completed successfully?
+- Job "whalesay" uses correct image?
+- Job "whalesay" configured with completions = 10?
+- Job "whalesay" with backoffLimit = 6
+- Job run's the command "cowsay I am going to ace CKAD!"?
+- Job "whalesay" completed successfully?
 
 ```bash
 k create job whalesay --image=docker/whalesay --dry-run=client -o yaml -- sh -c "cowsay I am going to ace CKAD!" > job.yaml
