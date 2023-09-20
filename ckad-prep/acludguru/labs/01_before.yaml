@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hive-content
+data:
+  index.html: |
+    {"message": "Welcome to the Hive API!"}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: hive
+  name: hive-web
+spec:
+  containers:
+    - image: nginx:stable
+      name: nginx
+      ports:
+        - containerPort: 80
+          protocol: TCP
+      resources: {}
+      volumeMounts:
+        - mountPath: /usr/share/nginx/html/
+          name: content
+  restartPolicy: Always
+  volumes:
+    - configMap:
+        name: hive-content
+      name: content
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hive-svc
+spec:
+  ports:
+    - port: 9090
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: hive
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: haproxy-config
+data:
+  haproxy.cfg: |
+    frontend ambassador
+      bind *:9090
+      default_backend hive_svc
+    backend hive_svc
+      server svc hive-svc:9076
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-gateway
+spec:
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      containers:
+        - command:
+            - sh
+            - -c
+            - while true; do curl hive-svc:9090; sleep 5; done
+          image: radial/busyboxplus:curl
+          name: busybox
+          resources: {}
+      restartPolicy: Always

@@ -8,6 +8,10 @@ curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-
 
 # https://minikube.sigs.k8s.io/docs/tutorials/volume_snapshots_and_csi/
 
+minikube start --cni calico
+
+==============
+
 minikube start --cni calico --addons=metrics-server
 
 minikube start --nodes 2 --cni calico --addons=metrics-server --memory=max --cpu=max

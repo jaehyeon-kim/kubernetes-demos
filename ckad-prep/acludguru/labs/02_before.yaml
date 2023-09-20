@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-processing
+spec:
+  selector:
+    matchLabels:
+      app: processing
+  template:
+    metadata:
+      labels:
+        app: processing
+    spec:
+      containers:
+        - command:
+            - sh
+            - -c
+            - while true; do cat /data/hivekey.txt > /tempdata/hivekey.txt; cat /tempdata/hivekey.txt;
+              sleep 5; done
+          image: radial/busyboxplus:curl
+          imagePullPolicy: IfNotPresent
+          name: busybox
+          resources: {}

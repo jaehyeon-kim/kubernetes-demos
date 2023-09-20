@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: internal-api-blue
+  namespace: hive
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: internal-api
+      color: blue
+  template:
+    metadata:
+      labels:
+        app: internal-api
+        color: blue
+    spec:
+      containers:
+        - name: nginx
+          image: linuxacademycontent/ckad-nginx:blue
+          ports:
+            - containerPort: 80
