@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hive-mgr
+  namespace: hive
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hive-mgr
+  template:
+    metadata:
+      labels:
+        app: hive-mgr
+    spec:
+      containers:
+        - command:
+            - sh
+            - -c
+            - "echo daily message: $(cat /config/honey.cfg); echo Authenticating with
+              hiveToken $TOKEN; while true; do sleep 5; done"
+          image: busybox:stable
+          name: busybox
+          resources: {}
+      restartPolicy: Always

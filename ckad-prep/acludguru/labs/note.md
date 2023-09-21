@@ -134,3 +134,149 @@ helm install cert-manager bitnami/cert-manager -n cert-manager
 helm list -n cert-manager
 helm get notes cert-manager -n cert-manager
 ```
+
+## 5. Implementing Health Checks in a Kubernetes Application
+
+Welcome to HiveCorp, a software design company that is totally not run by bees!
+
+We have recently deployed a new set of tools to our Kubernetes cluster, but there are some problems that need to be resolved.
+
+One component called comb-dashboard is an application that serves HTTP requests. A bug in the code is causing it to randomly begin responding with error status codes, but the container process continues to run. Currently, the only way to fix the issue when it arises is to restart the application. Implement a probe that will cause the container to be automatically restarted when it begins responding with errors.
+
+Another component, comb-monitor, is entering the ready status too early, before it has a chance to fully start up. Create a probe that will detect when the container is fully started up by running a test command.
+
+1. Add a Liveness Probe
+
+The comb-dashboard Deployment can be found in the hive Namespace.
+
+Edit the Deployment so that the containers are automatically restarted whenever they begin responding to HTTP requests with an error status code.
+
+The container application listens on port 80, and you can use the root path / to test whether the bug is occurring.
+
+2. Add a Readiness Probe
+
+You can find the comb-monitor in the hive Namespace.
+
+Edit this Deployment and add a probe that will verify that the application can execute command-line commands before the container is considered ready.
+
+You can use a simple command like echo This is a test!.
+
+## 6. Debugging a Kubernetes Application
+
+Welcome to HiveCorp, a software design company that is totally not run by bees!
+
+We are working on building some applications in our Kubernetes cluster, but there are some issues. We need you identify what is wrong and fix these problems!
+
+First, some Deployment's Pods are unable to start up (they won't even enter the Running status). Unfortunately, whoever reported this issue didn't provide much information, so you will need to locate this issue and fix it.
+
+Second, a Deployment called users-rest has Pods that are running, but they are not receiving any user traffic. Investigate why this is happening and correct the issue.
+
+```bash
+k apply -f https://raw.githubusercontent.com/ACloudGuru-Resources/content-cka-resources/master/metrics-server-components.yaml
+```
+
+1. Fix a Broken Deployment
+
+There is a Deployment in a cluster whose Pods are unable to enter the Running status. It is not simply the containers that are unready — the Pods themselves are not Running.
+
+Identify this Deployment and correct the issue.
+
+2. Fix an Application That Is Not Receiving User Traffic
+
+The users-rest Deployment in the hive Namespace has Pods that are starting up (meaning that the Pods are in the Running status), but these Pods are not receiving user traffic.
+
+Investigate to identify the problem and fix it.
+
+```bash
+# /var/run/secrets/kubenetes.io/serviceaccount/token
+# /var/run/secrets/kubenetes.io/serviceaccount/ca.crt
+curl -s --header "Authorization: Bearer $(cat /var/run/secrets/kubenetes.io/serviceaccount/token)" \
+  --cacert /var/run/secrets/kubenetes.io/serviceaccount/ca.crt \
+  https://kubernetes/api/v1/namespaces/default/pods
+```
+
+## 7. Managing Resource Usage in Kubernetes
+
+Welcome to HiveCorp, a software design company that is totally not run by bees!
+
+We have been expanding our usage of Kubernetes. However, as our applications have grown more complex, we have run into issues with the availability of compute resources. It is time to build a more sophisticated way of planning for and controlling resource usage in our cluster!
+
+You will need to set up resource requests and limits for a Deployment in the cluster. Once that is done, set up a quota to limit the amount of resources that can be consumed in the hive Namespace.
+
+1. Configure Resource Requests for a Deployment
+
+There is a Deployment called royal-jelly in the hive Namespace.
+
+Add resource requests to this Deployment's containers. The container should request 128Mi memory and 250m CPU.
+
+2. Add resource limits to the Deployment called royal-jelly in the hive Namespace.
+
+For the containers in this Deployment, the limits should be 256Mi for memory and 500m for CPU.
+
+3. Use a quota to limit the resources that can be used in the hive Namespace.
+
+The quota should allow total resource requests in the Namespace up to 1Gi for memory and 1 CPU.
+
+For resource limits, the quota should allow up to 2Gi for memory and 2 CPU.
+
+Note: The ResourceQuota admission controller is already enabled in the environment. You do not need to enable it.
+
+## 8. Configuring Applications in Kubernetes
+
+Welcome to HiveCorp, a software design company that is totally not run by bees!
+
+We have an application that needs some external configuration. It has a daily message that needs to be configured as well as a secret key that will need to be stored more securely.
+
+Create a ConfigMap and Secret to store the necessary configuration data. Then, modify a Deployment to pass the configuration data from the ConfigMap and Secret to the containers as requested.
+
+1. Create a ConfigMap
+
+Create a ConfigMap in the hive Namespace called honey-config.
+
+Store the following data in the ConfigMap:
+
+```
+honey.cfg: |
+  There is always money in the honey stand!
+```
+
+2. Create a Secret
+
+Create a Secret called hive-sec in the hive Namespace.
+
+Store the following value in the Secret:
+
+hiveToken: secretToken!
+Note that you will need to base64-encode the secretToken! value.
+
+3. In the hive Namespace, there is a Deployment called hive-mgr. Edit this Deployment so that the container is able to access the data from the ConfigMap and Secret.
+
+For the Secret, provide the value of the hiveToken key to the container as an environment variable called TOKEN.
+
+For the ConfigMap, load the data from the honey.cfg key using a mounted volume. The data should ultimately be accessible by the container at the path /config/honey.cfg.
+
+## 9. Welcome to HiveCorp, a software design company that is totally not run by bees!
+
+We are working on setting up our external landing page, hive.io. The application Deployment is already set up, but we need to configure a Service and an Ingress to expose the application.
+
+The Ingress controller is already set up. Create a Service to expose the existing Deployment. Then, create an Ingress that uses this Service as a backend.
+
+1. Create a Service to Expose the Application
+
+The application's Deployment is called hive-io-frontend and exists in the hive Namespace.
+
+The application's web server listens on port 80. Create a Service called hive-io-frontend-svc to expose this application on port 8080. The Service only needs to expose the application within the cluster network.
+
+2. Expose the Application Externally Using an Ingress
+
+Create an Ingress to expose the application.
+
+An Ingress controller is already installed. You can use nginx for the ingressClassName.
+
+Configure the application using hive.io for the domain. The lab server already has an entry in /etc/hosts set up for this domain, so you do not need to make any changes to /etc/hosts.
+
+Remember that the application's Service listens on port 8080.
+
+```
+k expose deploy hive-io-frontend --name=hive-io-frontend-svc --port=8080 --target-port=80 -n hive --dry-run=client -o yaml
+```

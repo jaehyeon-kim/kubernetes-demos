@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-frontend
+  namespace: comb
+spec:
+  selector:
+    matchLabels:
+      app: auth-frontend
+  template:
+    metadata:
+      labels:
+        app: auth-frontend
+    spec:
+      containers:
+        - image: nginx:1.20.1z
+          imagePullPolicy: IfNotPresent
+          name: nginx
+          resources: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-rest
+  namespace: hive
+spec:
+  selector:
+    matchLabels:
+      app: users-rest
+  template:
+    metadata:
+      labels:
+        app: users-rest
+    spec:
+      containers:
+        - image: nginx:1.20.1
+          name: nginx
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 3
+            periodSeconds: 3
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources: {}

@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: royal-jelly
+  namespace: hive
+spec:
+  selector:
+    matchLabels:
+      app: royal-jelly
+  template:
+    metadata:
+      labels:
+        app: royal-jelly
+    spec:
+      containers:
+        - image: nginx:stable
+          imagePullPolicy: IfNotPresent
+          name: nginx
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          resources: {}

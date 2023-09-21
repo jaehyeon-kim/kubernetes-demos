@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: comb-dashboard
+  namespace: hive
+spec:
+  selector:
+    matchLabels:
+      app: comb-dashboard
+  template:
+    metadata:
+      labels:
+        app: comb-dashboard
+    spec:
+      containers:
+        - image: linuxacademycontent/random-crashing-web-server:1
+          name: comb-dashboard
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          resources: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: comb-monitor
+  namespace: hive
+spec:
+  selector:
+    matchLabels:
+      app: comb-monitor
+  template:
+    metadata:
+      labels:
+        app: comb-monitor
+    spec:
+      containers:
+        - command:
+            - sh
+            - -c
+            - while true; do sleep 5; done
+          image: busybox:stable
+          name: busybox
+          resources: {}

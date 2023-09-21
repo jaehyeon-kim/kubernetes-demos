@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hive-io-frontend
+  namespace: hive
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hive-io-frontend
+  template:
+    metadata:
+      labels:
+        app: hive-io-frontend
+    spec:
+      containers:
+        - image: nginx:1.20.1
+          imagePullPolicy: IfNotPresent
+          name: nginx
+          resources: {}
+          volumeMounts:
+            - mountPath: /usr/share/nginx/html
+              name: hive-io-config
+      restartPolicy: Always
+      volumes:
+        - configMap:
+            defaultMode: 420
+            name: hive-io-config
+          name: hive-io-config
