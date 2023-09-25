@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c3p0
+  namespace: han
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: c3p0
+  template:
+    metadata:
+      labels:
+        app: c3p0
+    spec:
+      containers:
+        - env:
+            - name: NGINX_PORT
+              value: "80"
+          image: nginx:stable
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 1717
+              scheme: HTTP
+            initialDelaySeconds: 3
+            periodSeconds: 3
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: nginx
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          resources: {}

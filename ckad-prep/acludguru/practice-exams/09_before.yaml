@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: willow
+  namespace: buffy
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: willow
+  template:
+    metadata:
+      labels:
+        app: willow
+    spec:
+      containers:
+        - image: nginx:stable
+          imagePullPolicy: IfNotPresent
+          name: nginx
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          resources: {}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: xander
+  namespace: giles
+spec:
+  containers:
+    - command:
+        - sh
+        - -c
+        - while true; do sleep 5; done
+      image: radial/busyboxplus:curl
+      name: busybox
+      resources: {}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: api-1
+  name: api-1
+  namespace: giles
+spec:
+  containers:
+    - image: nginx:stable
+      imagePullPolicy: IfNotPresent
+      name: nginx
+      ports:
+        - containerPort: 80
+          protocol: TCP
+      resources: {}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny
+  namespace: giles
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+status: {}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-api-1
+  namespace: giles
+spec:
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              api-1-access: "true"
+      ports:
+        - port: 80
+          protocol: TCP
+  podSelector:
+    matchLabels:
+      app: api-1
+  policyTypes:
+    - Ingress
+status: {}

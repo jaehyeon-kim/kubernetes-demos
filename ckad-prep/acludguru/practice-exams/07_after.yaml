@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: pwd-runner
+  namespace: one
+spec:
+  jobTemplate:
+    metadata:
+      name: pwd-runner
+    spec:
+      activeDeadlineSeconds: 10
+      template:
+        metadata:
+          creationTimestamp: null
+        spec:
+          containers:
+            - command:
+                - pwd
+              image: busybox:stable
+              name: pwd-runner
+              resources: {}
+          restartPolicy: OnFailure
+  schedule: "*/1 * * * *"
+status: {}
