@@ -1,0 +1,38 @@
+kind: CustomResourceDefinition
+metadata:
+  name: foos.samplecontroller.k8s.io
+  annotations:
+    api-approved.kubernetes.io: "unapproved"
+spec:
+  names:
+    kind: Foo
+    plural: foos
+  scope: Namespaced
+  group: samplecontroller.k8s.io
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        # schema used for validation
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                deploymentName:
+                  type: string
+                replicas:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+            status:
+              type: object
+              properties:
+                availableReplicas:
+                  type: integer
+      # subresources for the custom resource
+      subresources:
+        # enables the status subresource
+        status: {}
