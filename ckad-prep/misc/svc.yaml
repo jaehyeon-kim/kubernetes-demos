@@ -1,0 +1,21 @@
+kind: "Service"
+apiVersion: "v1"
+metadata:
+  name: "external-web"
+spec:
+  ports:
+    - name: "apache"
+      protocol: "TCP"
+      port: 80
+      targetPort: 80
+---
+kind: "Endpoints"
+apiVersion: "v1"
+metadata:
+  name: "external-web"
+subsets:
+  - addresses:
+      - ip: "104.21.9.242" #The IP Address of the external web server
+    ports:
+      - port: 80
+        name: "apache"

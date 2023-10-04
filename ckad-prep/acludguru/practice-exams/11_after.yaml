@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: client
+spec:
+  volumes:
+    - name: haproxy-config
+      configMap:
+        name: haproxy-config
+  containers:
+    - name: ambassdor
+      image: haproxy:2.4
+      volumeMounts:
+        - name: haproxy-config
+          mountPath: /usr/local/etc/haproxy/
+    - name: main
+      image: radial/busyboxplus:curl
+      command:
+        ["sh", "-c", "while true; do curl -m 3 localhost:7171; sleep 5; done"]

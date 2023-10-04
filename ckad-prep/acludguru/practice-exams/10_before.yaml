@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-frontend
+  namespace: bluegreen
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web-frontend
+      env: main
+  template:
+    metadata:
+      labels:
+        app: web-frontend
+        env: main
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:stable
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: labels
+              mountPath: /usr/share/nginx/html
+      volumes:
+        - name: labels
+          downwardAPI:
+            items:
+              - path: index.html
+                fieldRef:
+                  fieldPath: metadata.labels
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-frontend-svc
+  namespace: bluegreen
+spec:
+  ports:
+    - nodePort: 30081
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: web-frontend
+    env: main
+  sessionAffinity: None
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth
+  namespace: canary
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: auth
+      env: main
+  template:
+    metadata:
+      labels:
+        app: auth
+        env: main
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:stable
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: labels
+              mountPath: /usr/share/nginx/html
+      volumes:
+        - name: labels
+          downwardAPI:
+            items:
+              - path: index.html
+                fieldRef:
+                  fieldPath: metadata.labels
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-svc
+  namespace: canary
+spec:
+  ports:
+    - nodePort: 30082
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: auth
+    env: main
+  type: NodePort

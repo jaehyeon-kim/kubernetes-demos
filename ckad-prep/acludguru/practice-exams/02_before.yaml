@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: han
+spec:
+  selector:
+    matchLabels:
+      app: han
+  template:
+    metadata:
+      labels:
+        app: han
+    spec:
+      containers:
+        - image: nginx:stable
+          imagePullPolicy: IfNotPresent
+          name: nginx
+          ports:
+            - containerPort: 80
+              protocol: TCP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: han
+spec:
+  selector:
+    matchLabels:
+      app: han
+  template:
+    metadata:
+      labels:
+        app: han
+    spec:
+      containers:
+        - image: nginx:stable
+          imagePullPolicy: IfNotPresent
+          name: nginx
+          ports:
+            - containerPort: 80
+              protocol: TCP
